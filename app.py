@@ -7,7 +7,7 @@ from PIL import Image
 
 X_test = []
 X_inner = []
-model = joblib.load(r"./random_forest.joblib")
+model = joblib.load("./random_forest.joblib")
 
 st.title(f'Lung Cancer Diagnosis - Online Screening Tool')
 st.subheader("A Random Forest Classifier based ML Model to screen a patient for cancer based on symptoms given :")
