@@ -1,13 +1,37 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import joblib
-import time
-from PIL import Image
+# import sns as sns
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import accuracy_score
+
+
+data = pd.read_csv(r'lungData.csv')
+data_new = data.drop(['GENDER', 'AGE', 'SMOKING', 'ALCOHOL CONSUMING', 'CHRONIC DISEASE', 'PEER_PRESSURE', 'ALLERGY '],
+                     axis=1)
+symptoms = ['YELLOW_FINGERS', 'ANXIETY', 'FATIGUE ', 'WHEEZING', 'COUGHING', 'SHORTNESS OF BREATH',
+            'SWALLOWING DIFFICULTY', 'CHEST PAIN']
+X = data_new[symptoms]
+y = data_new.LUNG_CANCER
+
+X_train, X_test, y_train, y_test = train_test_split( X, y)
+
+le = LabelEncoder()
+y_train= le.fit_transform(y_train)
+y_test= le.transform(y_test)
+
+key = {2: 'YES', 1: 'NO'}
+# for sys in symptoms:
+# 	sns.countplot(x = X_train[sys].replace(key))
+
+model =RandomForestClassifier()
+model.fit(X_train, y_train)
 
 X_test = []
 X_inner = []
-model = joblib.load("./random_forest.joblib")
+
 
 st.title(f'Lung Cancer Diagnosis - Online Screening Tool')
 st.subheader("A Random Forest Classifier based ML Model to screen a patient for cancer based on symptoms given :")
