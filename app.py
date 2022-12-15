@@ -9,9 +9,8 @@ from sklearn.metrics import accuracy_score
 
 
 data = pd.read_csv(r'lungData.csv')
-data_new = data.drop(['GENDER', 'AGE', 'PEER_PRESSURE'], axis=1)
-symptoms = ['YELLOW_FINGERS', 'ANXIETY', 'FATIGUE ', 'WHEEZING', 'COUGHING', 'SHORTNESS OF BREATH',
-            'SWALLOWING DIFFICULTY', 'CHEST PAIN', 'SMOKING', 'ALCOHOL CONSUMING', 'CHRONIC DISEASE', 'ALLERGY ']
+data_new = data.drop(['GENDER'], axis=1)
+symptoms = ['AGE','SMOKING','YELLOW_FINGERS', 'ANXIETY','PEER_PRESSURE','CHRONIC DISEASE', 'FATIGUE ','ALLERGY ', 'WHEEZING', 'ALCOHOL CONSUMING','COUGHING', 'SHORTNESS OF BREATH','SWALLOWING DIFFICULTY', 'CHEST PAIN']
 X = data_new[symptoms]
 y = data_new.LUNG_CANCER
 
@@ -38,6 +37,18 @@ st.text("Created by Anirudh Bharadwaj Vangara")
 diagnosis = ""
 my_bar = st.progress(0)
 
+genre = st.number_input("Enter your Age (Integer) : ", min_value=1, max_value=105)
+try:
+    X_inner.append(int(genre))
+except:
+    X_inner.append(50)
+genre = st.radio(
+    "Do you Smoke?",
+    ('Yes', 'No'))
+if genre == "Yes":
+    X_inner.append(2)
+else:
+    X_inner.append(1)
 genre = st.radio(
     "Are you experiencing Yellow Fingers?",
     ('Yes', 'No'))
@@ -53,7 +64,28 @@ if genre == "Yes":
 else:
     X_inner.append(1)
 genre = st.radio(
+    "Are your smoking/drinkings habits influenced by peer pressure (select No, if this does not apply to you)?",
+    ('Yes', 'No'))
+if genre == "Yes":
+    X_inner.append(2)
+else:
+    X_inner.append(1)
+genre = st.radio(
+    "Are you experiencing any Chronic Diseases?",
+    ('Yes', 'No'))
+if genre == "Yes":
+    X_inner.append(2)
+else:
+    X_inner.append(1)
+genre = st.radio(
     "Are you experiencing Fatigue?",
+    ('Yes', 'No'))
+if genre == "Yes":
+    X_inner.append(2)
+else:
+    X_inner.append(1)
+genre = st.radio(
+    "Do you have any Allergies?",
     ('Yes', 'No'))
 if genre == "Yes":
     X_inner.append(2)
@@ -67,41 +99,6 @@ if genre == "Yes":
 else:
     X_inner.append(1)
 genre = st.radio(
-    "Are you experiencing Coughing?",
-    ('Yes', 'No'))
-if genre == "Yes":
-    X_inner.append(2)
-else:
-    X_inner.append(1)
-genre = st.radio(
-    "Are you experiencing a shortness of breath?",
-    ('Yes', 'No'))
-if genre == "Yes":
-    X_inner.append(2)
-else:
-    X_inner.append(1)
-genre = st.radio(
-    "Are you experiencing swallowing difficulty?",
-    ('Yes', 'No'))
-if genre == "Yes":
-    X_inner.append(2)
-else:
-    X_inner.append(1)
-genre = st.radio(
-    "Are you experiencing Chest Pain?",
-    ('Yes', 'No'))
-if genre == "Yes":
-    X_inner.append(2)
-else:
-    X_inner.append(1)
-genre = st.radio(
-    "Do you Smoke?",
-    ('Yes', 'No'))
-if genre == "Yes":
-    X_inner.append(2)
-else:
-    X_inner.append(1)
-genre = st.radio(
     "Do you consume Alcohol?",
     ('Yes', 'No'))
 if genre == "Yes":
@@ -109,14 +106,28 @@ if genre == "Yes":
 else:
     X_inner.append(1)
 genre = st.radio(
-    "Do you suffer from any Chronic Disease?",
+    "Are you experiencing Coughing?",
     ('Yes', 'No'))
 if genre == "Yes":
     X_inner.append(2)
 else:
     X_inner.append(1)
 genre = st.radio(
-    "Do you suffer from any Allergies?",
+    "Do you suffer from any Shortness of Breath?",
+    ('Yes', 'No'))
+if genre == "Yes":
+    X_inner.append(2)
+else:
+    X_inner.append(1)
+genre = st.radio(
+    "Do you suffer from any Swallowing Difficulty?",
+    ('Yes', 'No'))
+if genre == "Yes":
+    X_inner.append(2)
+else:
+    X_inner.append(1)
+genre = st.radio(
+    "Are you suffering from Chest Pain?",
     ('Yes', 'No'))
 if genre == "Yes":
     X_inner.append(2)
@@ -127,13 +138,13 @@ def getDiagnosis():
     X_test.append(X_inner)
     y_pred = model.predict(X_test)
     if y_pred == 0:
-        diagnosis = "No Lung Cancer Predicted"
+        diagnosis = "No Lung Cancer Predicted (Based on given symptoms)"
         st.subheader(f"{diagnosis}")
-        st.success('Prediction Released! ✅')
+        st.success('Prediction Released! ✅ - Your symptoms suggest you are not suffering from Lung Cancer.')
     else:
-        diagnosis = "Lung Cancer Predicted"
+        diagnosis = "Lung Cancer Predicted (Based on given symptoms)"
         st.subheader(f"{diagnosis}")
-        st.success('Prediction Released! ✅')
+        st.success('Prediction Released! ✅ - Your symptoms align with common symptoms of Lung Cancer. We suggest you seek medical attention and get a proper diagnosis as a precaution for any health issues.')
 
 
 submitBtn = st.button("Get Diagnosis", on_click=getDiagnosis,disabled=False)
