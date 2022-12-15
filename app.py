@@ -6,6 +6,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import accuracy_score
+import streamlit.components.v1 as components
+import time
 
 
 data = pd.read_csv(r'lungData.csv')
@@ -134,17 +136,52 @@ if genre == "Yes":
 else:
     X_inner.append(1)
 
+def progressEffect():
+    pass
+
 def getDiagnosis():
     X_test.append(X_inner)
     y_pred = model.predict(X_test)
+    components.html(
+    f"""
+        <script>
+            window.parent.document.querySelector('section.main').scrollTo(0, 0);
+        </script>
+    """,
+    height=0
+    )
+
+    my_bar = st.progress(0)
+    progress_text = st.write("Loading Data...")
+    for percent_complete in range(25):
+        time.sleep(0.1)
+        my_bar.progress(percent_complete + 1)
+    progress_text = st.write("Analysing Symptoms...")
+    for percent_complete in range(25,51):
+        time.sleep(0.1)
+        my_bar.progress(percent_complete + 1)
+    progress_text = st.write("Looking For Patterns...")
+    for percent_complete in range(50,76):
+        time.sleep(0.1)
+        my_bar.progress(percent_complete + 1)
+    progress_text = st.write("Determining A Prediction...")
+    for percent_complete in range(75,100):
+        time.sleep(0.1)
+        my_bar.progress(percent_complete + 1)
+    with st.spinner('Loading Prediction Output...'):
+            time.sleep(3)
+            
+    progress_text=st.write("")
+
     if y_pred == 0:
         diagnosis = "No Lung Cancer Predicted (Based on given symptoms)"
         st.subheader(f"{diagnosis}")
         st.success('Prediction Released! ✅ - Your symptoms suggest you are not suffering from Lung Cancer.')
     else:
         diagnosis = "Lung Cancer Predicted (Based on given symptoms)"
+        
         st.subheader(f"{diagnosis}")
-        st.success('Prediction Released! ✅ - Your symptoms align with common symptoms of Lung Cancer. We suggest you seek medical attention and get a proper diagnosis as a precaution for any health issues.')
+        st.warning('Prediction Released! ⚠️ - Your symptoms align with common symptoms of Lung Cancer.\n We suggest you seek medical attention and get a proper diagnosis as a precaution for any health issues.')
 
 
 submitBtn = st.button("Get Diagnosis", on_click=getDiagnosis,disabled=False)
